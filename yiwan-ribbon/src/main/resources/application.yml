@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: ribbonhystrix
+server:
+  port: 8101
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka1:2001/eureka,http://eureka2:2002/eureka
+ribbon:
+  MaxAutoRetriesNextServer: 2 #下一台服务器重试连接次数
+  MaxAutoRetries: 1 #当前服务器重试连接次数
+  #重试连接假如有两台，第二台连接两次失败后，又会返回第一台连接两次，所以当前参数配置，都失败了会连接6次
+  OkToRetryOnAllOperations: true  
+  
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000 #hystrix的超时等待结果时间，超过直接降级操作
+            
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream #暴露全部监控端点  "*"
